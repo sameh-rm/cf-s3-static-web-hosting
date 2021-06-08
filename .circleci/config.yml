@@ -56,7 +56,7 @@ jobs:
       - run:
           name: clean up the old cdn
           command: |
-            aws s3 rm "s3://${OldPipelineID}" --recursive
+            aws s3 rm "s3://${cat OldPipelineID}" --recursive
             aws cloudformation delete-stack --stack-name "${oldPipelineID}"
 
 workflows:
