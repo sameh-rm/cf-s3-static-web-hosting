@@ -1,4 +1,5 @@
 version: 2.1
+
 commands:
   destroy_environment:
     steps:
@@ -29,6 +30,35 @@ jobs:
             --stack-name "cf-web-${CIRCLE_WORKFLOW_ID:0:7}" \
             --parameter-overrides PipelineID="cf-web-${CIRCLE_WORKFLOW_ID:0:7}" 
       - destroy_environment
+
+  get_last_deployment_id:
+    docker:
+      - image: amazon/aws-cli
+    steps:
+      - checkout
+      - run: 
+          name: get the pipline_id
+          command: |
+            aws cloudformation \
+            list-exports --query "Exports[?Name==\`PipelineID\`].Value" \
+            --no-paginate --output text > piplineID
+      save_cache:
+        key: oldPipelineID
+        value: piplineID
+
+  clean_old_frontend:
+    docker:
+      - image: amazon/aws-cli
+    steps:
+      - checkout:
+      - restore_cache:
+          key: oldPipelineID
+      - run:
+          name: clean up the old cdn
+          command: |
+            aws s3 rm "s3://${OldPipelineID}" --recursive
+            aws cloudformation delete-stack --stack-name "${oldPipelineID}"
+
 workflows:
   my_workflow:
     jobs:
