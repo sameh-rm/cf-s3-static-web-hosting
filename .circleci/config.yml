@@ -69,3 +69,6 @@ workflows:
       - get_last_deployment_id:
           requires:
             - smoke_test
+      - clean_old_frontend:
+          requires:
+            - get_last_deployment_id
