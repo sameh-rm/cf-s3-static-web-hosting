@@ -50,7 +50,7 @@ jobs:
     docker:
       - image: amazon/aws-cli
     steps:
-      - checkout:
+      - checkout
       - restore_cache:
           key: oldPipelineID
       - run:
