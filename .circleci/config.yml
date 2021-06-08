@@ -42,10 +42,10 @@ jobs:
             aws cloudformation \
             list-exports --query "Exports[?Name==\`PipelineID\`].Value" \
             --no-paginate --output text > piplineID
-      save_cache:
-        key: oldPipelineID
-        value: piplineID
-
+      - save_cache:
+          key: oldPipelineID
+          paths:
+            - /piplineID
   clean_old_frontend:
     docker:
       - image: amazon/aws-cli
